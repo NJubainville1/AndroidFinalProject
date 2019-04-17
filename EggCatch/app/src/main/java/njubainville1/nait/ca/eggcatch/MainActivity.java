@@ -10,16 +10,20 @@ import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     //Image
     private ImageView box, black, orange, pink;
-    private Drawable imageBoxRight, imageBoxLeft;
+    private Drawable imageBoxRight, imageBoxLeft, imageBoxLeft2, imageBoxRight2;
+    private ToggleButton toggle;
 
     //Size
     private int boxWidth;
@@ -67,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean start_flag = false;
     private boolean action_flag = false;
     private boolean pink_flag = false;
+    private boolean chungus_flag = false;
+
 
 
     @Override
@@ -84,14 +91,20 @@ public class MainActivity extends AppCompatActivity {
         pink = (ImageView)findViewById(R.id.pink);
         scoreLabel = (TextView)findViewById(R.id.scoreLabel);
         highScoreLabel = (TextView)findViewById(R.id.highScoreLabel);
+        toggle = (ToggleButton) findViewById(R.id.unlockChungus);
+
 
         imageBoxLeft = getResources().getDrawable(R.drawable.bunny_left);
         imageBoxRight = getResources().getDrawable(R.drawable.bunny_right);
+        imageBoxLeft2 = getResources().getDrawable(R.drawable.chungus_left);
+        imageBoxRight2 = getResources().getDrawable(R.drawable.chungus_right);
 
         //High Score
         settings = getSharedPreferences("GAME_DATA", Context.MODE_PRIVATE);
         highScore = settings.getInt("HIGH_SCORE", 0);
         highScoreLabel.setText("High Score : " + highScore);
+
+        checkChungus();
 
         //Get screen size
         WindowManager wm = getWindowManager();
@@ -101,44 +114,12 @@ public class MainActivity extends AppCompatActivity {
 
         screenWidth = size.x;
         screenHeight = size.y;
-
-        //Setting speed relational to the size of the screen
-        //This ensures it is consistent across all devices
-        //For example: Nexus 4 width: 768 height: 1184
-        //Static Speeds of the objects - box:20 orange:12 pink:20 black:16
-
-        boxSpeed = Math.round(screenWidth / 55F);     // 768 / 55 = 13.963 => 14
-        orangeSpeed = Math.round(screenHeight / 99F); // 1184 / 99 = 11.959 => 12
-        pinkSpeed = Math.round(screenHeight / 59F);   // 1184 / 59 = 20.067 => 20
-        blackSpeed = Math.round(screenHeight / 66F);  // 1184 / 66 = 17.939 => 18
-
     }
 
     public void changePos()
     {
         //Add timeCount
         timeCount += 20;
-
-        //Orange
-        orangeY += orangeSpeed;
-
-        float orangeCenterX = orangeX + orange.getWidth() / 2;
-        float orangeCenterY = orangeY + orange.getHeight() / 2;
-
-        if(hitCheck(orangeCenterX, orangeCenterY))
-        {
-            orangeY = frameHeight + 100;
-            score += 10;
-            soundPlayer.playHitOrangeSound();
-        }
-
-        if(orangeY > frameHeight)
-        {
-            orangeY = -100f;
-            orangeX = (float) Math.floor(Math.random() * (frameWidth - orange.getWidth()));
-        }
-        orange.setX(orangeX);
-        orange.setY(orangeY);
 
         //Pink
         //Since we want pink to appear every 10 seconds, we do a check on timeCount to see when
@@ -175,6 +156,27 @@ public class MainActivity extends AppCompatActivity {
             pink.setY(pinkY);
         }
 
+        //Orange
+        orangeY += orangeSpeed;
+
+        float orangeCenterX = orangeX + orange.getWidth() / 2;
+        float orangeCenterY = orangeY + orange.getHeight() / 2;
+
+        if(hitCheck(orangeCenterX, orangeCenterY))
+        {
+            orangeY = frameHeight + 100;
+            score += 10;
+            soundPlayer.playHitOrangeSound();
+        }
+
+        if(orangeY > frameHeight)
+        {
+            orangeY = -100f;
+            orangeX = (float) Math.floor(Math.random() * (frameWidth - orange.getWidth()));
+        }
+        orange.setX(orangeX);
+        orange.setY(orangeY);
+
         //Black
         blackY += blackSpeed;
 
@@ -192,7 +194,6 @@ public class MainActivity extends AppCompatActivity {
             if(frameWidth <= boxWidth)
             {
                 gameOver();
-
             }
         }
         if(blackY > frameHeight)
@@ -210,29 +211,56 @@ public class MainActivity extends AppCompatActivity {
         {
             //Touching screen
             boxX += boxSpeed;
-            box.setImageDrawable(imageBoxRight);
+            if(chungus_flag)
+            {
+                box.setImageDrawable(imageBoxRight2);
+            }
+            else
+            {
+                box.setImageDrawable(imageBoxRight);
+            }
         }
         else
         {
             //Releasing
             boxX -= boxSpeed;
-            box.setImageDrawable(imageBoxLeft);
+            if(chungus_flag)
+            {
+                box.setImageDrawable(imageBoxLeft2);
+            }
+            else
+            {
+                box.setImageDrawable(imageBoxLeft);
+            }
         }
 
         //Check box position
         if(boxX < 0)
         {
             boxX = 0;
-            box.setImageDrawable(imageBoxRight);
+            if(chungus_flag)
+            {
+                box.setImageDrawable(imageBoxRight2);
+            }
+            else
+            {
+                box.setImageDrawable(imageBoxRight);
+            }
         }
         if(frameWidth - boxWidth < boxX)
         {
             boxX = frameWidth - boxWidth;
-            box.setImageDrawable(imageBoxLeft);
+            if(chungus_flag)
+            {
+                box.setImageDrawable(imageBoxLeft2);
+            }
+            else
+            {
+                box.setImageDrawable(imageBoxLeft);
+            }
         }
 
         box.setX(boxX);
-
         scoreLabel.setText("Score : " + score);
     }
 
@@ -253,6 +281,27 @@ public class MainActivity extends AppCompatActivity {
         gameFrame.setLayoutParams(params);
     }
 
+    public void checkChungus()
+    {
+        if(highScore >= 1000)
+        {
+            toggle.setVisibility(View.VISIBLE);
+            toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    if (isChecked)
+                    {
+                        chungus_flag = true;
+                    } else
+                    {
+                        chungus_flag = false;
+                    }
+                }
+            });
+        }
+    }
+
     public void gameOver()
     {
         //Stop the timer
@@ -270,8 +319,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-//        changeFrameWidth(initialFrameWidth);
-
         //Update High Score
         if(score > highScore)
         {
@@ -287,12 +334,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("SCORE", score);
         intent.putExtra("HIGH_SCORE", highScore);
         startActivity(intent);
-//        startLayout.setVisibility(View.VISIBLE);
-//        box.setVisibility(View.INVISIBLE);
-//        black.setVisibility(View.INVISIBLE);
-//        pink.setVisibility(View.INVISIBLE);
-//        orange.setVisibility(View.INVISIBLE);
-
     }
 
     @Override
@@ -313,6 +354,32 @@ public class MainActivity extends AppCompatActivity {
 
     public void startGame(View view)
     {
+        //Setting speed relational to the size of the screen
+        //This ensures it is consistent across all devices
+        //For example: Nexus 4 width: 768 height: 1184
+        //We place this inside the startGame method due to the check we make on the chungus_flag
+        //This ensures the speed of the game is correct based on the player's character
+
+        if(chungus_flag)
+        {
+            boxSpeed = Math.round(screenWidth / 35F);     // 768 / 35 = 21.942 => 22
+            orangeSpeed = Math.round(screenHeight / 50F); // 1184 / 50 = 23.68 => 24
+            pinkSpeed = Math.round(screenHeight / 40F);   // 1184 / 40 = 29.6 => 30
+            blackSpeed = Math.round(screenHeight / 45F);  // 1184 / 45 = 26.31... => 26
+        }
+        else
+        {
+            boxSpeed = Math.round(screenWidth / 55F);     // 768 / 55 = 13.963 => 14
+            orangeSpeed = Math.round(screenHeight / 99F); // 1184 / 99 = 11.959 => 12
+            pinkSpeed = Math.round(screenHeight / 59F);   // 1184 / 59 = 20.067 => 20
+            blackSpeed = Math.round(screenHeight / 66F);  // 1184 / 66 = 17.939 => 18
+        }
+//        Checking the speed across different devices within the log
+//        Log.v("SPEED_BOX", boxSpeed+"");
+//        Log.v("SPEED_ORANGE", orangeSpeed+"");
+//        Log.v("SPEED_PINK", pinkSpeed+"");
+//        Log.v("SPEED_BLACK", blackSpeed+"");
+
         start_flag = true;
         startLayout.setVisibility(View.INVISIBLE);
 
@@ -352,16 +419,20 @@ public class MainActivity extends AppCompatActivity {
         //delay is in milliseconds before the task is to be executed
         //period is the rate at which the task will execute in succession
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.schedule(new TimerTask()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 if(start_flag)
                 {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            changePos();
-                        }
+                    handler.post(new Runnable()
+                    {
+                    @Override
+                    public void run()
+                    {
+                        changePos();
+                    }
                     });
                 }
             }
@@ -375,6 +446,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
+
+        //Newer alternative for APIs above Lollipop
+        //finishAndRemoveTask();
     }
 
     //Disable returning to the previous screen

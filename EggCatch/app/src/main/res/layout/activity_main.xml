@@ -5,9 +5,8 @@
     android:layout_height="match_parent"
     tools:context="njubainville1.nait.ca.eggcatch.MainActivity"
     android:orientation="vertical"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg_3">
 
-    <!--change score from a literal-->
     <TextView
         android:id="@+id/scoreLabel"
         android:layout_width="match_parent"
@@ -15,12 +14,17 @@
         android:text="Score : 0"
         android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="-2"
+        android:shadowDy="2"
+        android:shadowRadius="0.01"
         android:gravity="center"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         android:layout_marginBottom="20dp"
-        android:background="@android:color/white"
         />
+
     <FrameLayout
         android:id="@+id/gameFrame"
         android:layout_width="260dp"
@@ -136,25 +140,36 @@
                         android:paddingLeft="10dp"/>
                 </TableRow>
             </TableLayout>
+            <ToggleButton
+                android:id="@+id/unlockChungus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="Chungus?"
+                android:textOn="Rabbit"
+                android:textSize="12sp"
+                android:textAllCaps="false"
+                android:background="@android:color/transparent"
+                android:textColor="@android:color/white"
+                android:visibility="invisible"/>
             <TextView
                 android:id="@+id/highScoreLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="High Score : 300"
+                android:text="High Score : 0"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:shadowColor="@android:color/black"
                 android:shadowDx="-2"
                 android:shadowDy="2"
-                android:shadowRadius="0.01"
-                android:layout_marginTop="40dp"/>
+                android:shadowRadius="0.01"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Start"
                 android:layout_marginTop="30dp"
                 android:textAllCaps="false"
+                android:background="@drawable/rounded_corners"
                 android:onClick="startGame"/>
             <Button
                 android:layout_width="wrap_content"
@@ -162,12 +177,9 @@
                 android:text="Quit"
                 android:layout_marginTop="20dp"
                 android:textAllCaps="false"
+                android:background="@drawable/rounded_corners"
                 android:onClick="quitGame"/>
-
         </LinearLayout>
-
     </FrameLayout>
-
-
 
 </LinearLayout>

@@ -6,7 +6,7 @@
     tools:context="njubainville1.nait.ca.eggcatch.ResultScreen"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/bg">
+    android:background="@drawable/bg_3">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:id="@+id/scoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="150"
+        android:text="0"
         android:textSize="40sp"
         android:textColor="@android:color/white"
         android:shadowColor="@android:color/black"
@@ -33,7 +33,7 @@
         android:id="@+id/highScoreLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="High Score: 300"
+        android:text="High Score: 0"
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:shadowColor="@android:color/black"

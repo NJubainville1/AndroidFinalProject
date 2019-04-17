@@ -32,6 +32,7 @@ public class SoundPlayer {
         }
         else
         {
+            //SoundPool (int maxStreams, int streamType, int srcQuality)
             soundPool = new SoundPool(SOUND_POOL_MAX, AudioManager.STREAM_MUSIC, 0);
         }
 
@@ -39,14 +40,14 @@ public class SoundPlayer {
         hitPinkSound = soundPool.load(context, R.raw.pink, 1);
         hitBlackSound = soundPool.load(context, R.raw.black, 1);
     }
-
+    public void playHitPinkSound()
+    {
+        //play(int SoundID, float leftVolume, float rightVolume, int priority, int loop, float rate)
+        soundPool.play(hitPinkSound, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
     public void playHitOrangeSound()
     {
         soundPool.play(hitOrangeSound, 1.0f, 1.0f, 1, 0, 1.0f);
-    }
-    public void playHitPinkSound()
-    {
-        soundPool.play(hitPinkSound, 1.0f, 1.0f, 1, 0, 1.0f);
     }
     public void playHitBlackSound()
     {
